@@ -12,38 +12,28 @@ window.renderStatistics = function (ctx, names, times) {
   var MY_COLOR = 'rgba(255, 0, 0, 1)';
   var OTHER_COLOR = 'rgba(0, 0, 255, ' + Math.random() + ')';
 
-
-  var cloudEndX = CLOUD_START_X + CLOUD_WIDTH;
-  var cloudEndY = CLOUD_START_Y + CLOUD_HEIGHT;
-  var cloudCenterX = (cloudEndX - CLOUD_START_X) / 2 + CLOUD_START_X;
-  var cloudCenterY = (cloudEndY - CLOUD_START_Y) / 2 + CLOUD_START_Y;
-  var shadowStartX = CLOUD_START_X + SHADOW_BIAS;
-  var shadowStartY = CLOUD_START_Y + SHADOW_BIAS;
-  var shadowCenterX = cloudCenterX + SHADOW_BIAS;
-  var shadowCenterY = cloudCenterY + SHADOW_BIAS;
-  var shadowEndX = cloudEndX + SHADOW_BIAS;
-  var shadowEndY = cloudEndY + SHADOW_BIAS;
-  var textStartX = CLOUD_START_X + 30;
-  var textStartY = CLOUD_START_Y + 30;
-  var textStep = 20;
   var statisticStartX = CLOUD_START_X + 50;
-  var statisticStartY = cloudEndY - 35;
-  var maxTime = 0;
-  var heightColumn = 0;
-  var distance = 0;
-  var colorForColumn;
+  var statisticStartY = CLOUD_START_Y + CLOUD_HEIGHT - 35;
+  var maxTime;
 
-  var renderStatisticPlayer = function (x, y, color, yourName, yourTime) {
-    yourTime = Math.round(yourTime);
-    ctx.fillStyle = color;
-    heightColumn = yourTime * HEIGHT_BARCHART / maxTime;
-    ctx.fillRect(x, y, WIDTH_COLUMN, -heightColumn);
-    ctx.fillStyle = '#000';
-    ctx.textBaseline = 'top';
-    ctx.fillText(yourName, x + 5, y + 2);
-    ctx.textBaseline = 'bottom';
-    ctx.fillText(yourTime, x + 5, y - heightColumn - 2);
-  };
+  renderClound(CLOUD_START_X, CLOUD_START_Y, CLOUD_WIDTH, CLOUD_HEIGHT, SHADOW_BIAS, ctx);
+  renderText(CLOUD_START_X, CLOUD_START_Y, ctx);
+  maxTime = searchMax(times);
+  renderStatisticPlayer(statisticStartX, statisticStartY, names, times, HEIGHT_BARCHART, WIDTH_COLUMN, maxTime, MY_COLOR, OTHER_COLOR, DISTANCE_COLUMN, ctx);
+};
+
+var renderClound = function (cloudStartX, cloudStartY, cloudWidth, cloudHeight, shadowBias, ctx) {
+
+  var cloudEndX = cloudStartX + cloudWidth;
+  var cloudEndY = cloudStartY + cloudHeight;
+  var cloudCenterX = (cloudEndX - cloudStartX) / 2 + cloudStartX;
+  var cloudCenterY = (cloudEndY - cloudStartY) / 2 + cloudStartY;
+  var shadowStartX = cloudStartX + shadowBias;
+  var shadowStartY = cloudStartY + shadowBias;
+  var shadowCenterX = cloudCenterX + shadowBias;
+  var shadowCenterY = cloudCenterY + shadowBias;
+  var shadowEndX = cloudEndX + shadowBias;
+  var shadowEndY = cloudEndY + shadowBias;
 
   ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
   ctx.strokeStyle = 'rgba(0, 0, 0, 0.7)';
@@ -63,36 +53,61 @@ window.renderStatistics = function (ctx, names, times) {
   ctx.fillStyle = '#fff';
   ctx.strokeStyle = '#fff';
   ctx.beginPath();
-  ctx.moveTo(CLOUD_START_X, CLOUD_START_Y);
-  ctx.lineTo(cloudCenterX, CLOUD_START_Y + 10);
-  ctx.lineTo(cloudEndX, CLOUD_START_Y);
+  ctx.moveTo(cloudStartX, cloudStartY);
+  ctx.lineTo(cloudCenterX, cloudStartY + 10);
+  ctx.lineTo(cloudEndX, cloudStartY);
   ctx.lineTo(cloudEndX - 10, cloudCenterY);
   ctx.lineTo(cloudEndX, cloudEndY);
   ctx.lineTo(cloudCenterX, cloudEndY - 10);
-  ctx.lineTo(CLOUD_START_X, cloudEndY);
-  ctx.lineTo(CLOUD_START_X + 10, cloudCenterY);
+  ctx.lineTo(cloudStartX, cloudEndY);
+  ctx.lineTo(cloudStartX + 10, cloudCenterY);
   ctx.closePath();
   ctx.stroke();
   ctx.fill();
+};
+
+var renderText = function (cloudStartX, cloudStartY, ctx) {
+  var textStartX = cloudStartX + 30;
+  var textStartY = cloudStartY + 30;
+  var textStep = 20;
 
   ctx.font = '16px PT Mono';
   ctx.fillStyle = '#000';
   ctx.fillText('Ура вы победили!', textStartX, textStartY);
   ctx.fillText('Список результатов:', textStartX, textStartY + textStep);
+};
 
+var searchMax = function (times) {
+  var max = 0;
   for (var i = 0; i < times.length; i++) {
-    if (times[i] > maxTime) {
-      maxTime = times[i];
+    if (times[i] > max) {
+      max = times[i];
     }
   }
+  return max;
+};
+
+var renderStatisticPlayer = function (x, y, names, times, heightBarchart, widthColumn, maxTime, myColor, otherColor, distanceColumn, ctx) {
+  var heightColumn;
+  var distance = 0;
+  var colorForColumn;
 
   for (var j = 0; j < names.length; j++) {
     if (names[j] === 'Вы') {
-      colorForColumn = MY_COLOR;
+      colorForColumn = myColor;
     } else {
-      colorForColumn = OTHER_COLOR;
+      colorForColumn = otherColor;
     }
-    renderStatisticPlayer(statisticStartX + distance, statisticStartY, colorForColumn, names[j], times[j]);
-    distance = distance + DISTANCE_COLUMN + WIDTH_COLUMN;
+    x = x + distance;
+    times[j] = Math.round(times[j]);
+    ctx.fillStyle = colorForColumn;
+    heightColumn = times[j] * heightBarchart / maxTime;
+    ctx.fillRect(x, y, widthColumn, -heightColumn);
+    ctx.fillStyle = '#000';
+    ctx.textBaseline = 'top';
+    ctx.fillText(names[j], x + 5, y + 2);
+    ctx.textBaseline = 'bottom';
+    ctx.fillText(times[j], x + 5, y - heightColumn - 2);
+    distance = distanceColumn + widthColumn;
   }
 };
