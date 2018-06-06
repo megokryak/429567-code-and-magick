@@ -18,14 +18,14 @@ window.renderStatistics = function (ctx, names, times) {
   var statisticStartY = CLOUD_START_Y + CLOUD_HEIGHT - 35;
   var maxTime;
 
-  renderClound(CLOUD_START_X + SHADOW_BIAS, CLOUD_START_Y + SHADOW_BIAS, CLOUD_WIDTH, CLOUD_HEIGHT, COLOR_SHADOW, ctx);
-  renderClound(CLOUD_START_X, CLOUD_START_Y, CLOUD_WIDTH, CLOUD_HEIGHT, COLOR_CLOUD, ctx);
+  renderCloud(CLOUD_START_X + SHADOW_BIAS, CLOUD_START_Y + SHADOW_BIAS, CLOUD_WIDTH, CLOUD_HEIGHT, COLOR_SHADOW, ctx);
+  renderCloud(CLOUD_START_X, CLOUD_START_Y, CLOUD_WIDTH, CLOUD_HEIGHT, COLOR_CLOUD, ctx);
   renderText(CLOUD_START_X, CLOUD_START_Y, ctx);
   maxTime = searchMax(times);
   renderStatisticPlayer(statisticStartX, statisticStartY, names, times, HEIGHT_BARCHART, WIDTH_COLUMN, maxTime, MY_COLOR, OTHER_COLOR, DISTANCE_COLUMN, ctx);
 };
 
-var renderClound = function (cloudStartX, cloudStartY, cloudWidth, cloudHeight, color, ctx) {
+var renderCloud = function (cloudStartX, cloudStartY, cloudWidth, cloudHeight, color, ctx) {
 
   var cloudEndX = cloudStartX + cloudWidth;
   var cloudEndY = cloudStartY + cloudHeight;
