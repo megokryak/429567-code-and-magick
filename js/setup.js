@@ -69,6 +69,7 @@ var openPopup = function () {
 // закрытие popup
 var closePopup = function () {
   wizard.classList.add('hidden');
+  wizard.removeAttribute('style');
   document.removeEventListener('keydown', popupEscPressHandler); // Удаление объявления собития нажатии кнопки при закрытом окне
 };
 // закрытие по нажатию ESC
