@@ -1,11 +1,4 @@
 'use strict';
-
-var WIZARDS_NAMES = ['Иван', 'Хуан Себастьян', 'Мария', 'Кристоф', 'Виктор', 'Юлия', 'Люпита', 'Вашингтон'];
-var WIZARDS_LASTNAMES = ['да Марья', 'Верон', 'Мирабелла', 'Вальц', 'Онопко', 'Топольницкая', 'Нионго', 'Ирвинг'];
-var WIZARDS_COAT_COLOR = ['rgb(101, 137, 164)', 'rgb(241, 43, 107)', 'rgb(146, 100, 161)', 'rgb(56, 159, 117)', 'rgb(215, 210, 55)', 'rgb(0, 0, 0)'];
-var WIZARDS_EYES_COLOR = ['black', 'red', 'blue', 'yellow', 'green'];
-var WIZARDS_FIREBALL_COLOR = ['#ee4830', '#30a8ee', '#5ce6c0', '#e848d5', '#e6e848'];
-
 var wizardsClan = [];
 var wizardTemplate = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
 var listElement = document.querySelector('.setup-similar-list');
@@ -55,7 +48,7 @@ var getRandomValue = function (lengthValue) {
 };
 
 document.querySelector('.setup-similar').classList.remove('hidden');
-buildWizards(WIZARDS_NAMES, WIZARDS_LASTNAMES, WIZARDS_COAT_COLOR, WIZARDS_EYES_COLOR);
+buildWizards(window.initialData.WIZARDS_NAMES, window.initialData.WIZARDS_LASTNAMES, window.initialData.WIZARDS_COAT_COLOR, window.initialData.WIZARDS_EYES_COLOR);
 buildTemplate(wizardTemplate, wizardsClan, listElement);
 
 // Открытие/закрытие окна настройки персонажа
@@ -119,7 +112,7 @@ var getRandomColorForMag = function (arrayChangeColor) {
 };
 
 var wizardCoatClickHandler = function () {
-  var colorCoat = getRandomColorForMag(WIZARDS_COAT_COLOR);
+  var colorCoat = getRandomColorForMag(window.initialData.WIZARDS_COAT_COLOR);
   wizardCoat.style.fill = colorCoat;
   wizardHiddenCoat.value = colorCoat;
 };
@@ -130,7 +123,7 @@ wizardCoat.addEventListener('click', wizardCoatClickHandler);
 // =========Изменение цвета глаз персонажа========//
 // По нажатию на .setup-wizard .wizard-eyes меняет цвет рандомно из массива WIZARDS_EYES_COLOR
 var wizardEyesClickHandler = function () {
-  var colorEyes = getRandomColorForMag(WIZARDS_EYES_COLOR);
+  var colorEyes = getRandomColorForMag(window.initialData.WIZARDS_EYES_COLOR);
   wizardColorEyes.style.fill = colorEyes;
   wizardHiddenColorEyes.value = colorEyes;
 };
@@ -140,7 +133,7 @@ wizardColorEyes.addEventListener('click', wizardEyesClickHandler);
 // =========Изменение цвета Firebolla=======//
 // По нажатию на блок .setup-fireball-wrap меняется цвет рандомно из массива WIZARDS_FIREBALL_COLOR
 var wizardFireBallClickHandler = function () {
-  var colorFireBall = getRandomColorForMag(WIZARDS_FIREBALL_COLOR);
+  var colorFireBall = getRandomColorForMag(window.initialData.WIZARDS_FIREBALL_COLOR);
   wizardFireBall.style.background = colorFireBall;
   wizardHiddenFireBall.value = colorFireBall;
 };
