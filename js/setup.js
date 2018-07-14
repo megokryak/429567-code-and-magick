@@ -1,5 +1,4 @@
 'use strict';
-var wizardsClan = [];
 var wizardTemplate = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
 var listElement = document.querySelector('.setup-similar-list');
 // Обработка событий
@@ -13,31 +12,15 @@ var wizardColorEyes = document.querySelector('.setup-wizard').querySelector('.wi
 var wizardHiddenColorEyes = document.querySelector('input[name="eyes-color"]');
 var wizardFireBall = document.querySelector('.setup-fireball-wrap'); // Файерболл мага
 var wizardHiddenFireBall = document.querySelector('input[name="fireball-color"]');
-
-// Создание объекта с данными о магах
-var buildWizards = function (names, lastnames, coatColor, eyesColor) {
-  var fullnameRandom;
-  var colorCoatRandom;
-  var colorEyeRandom;
-  for (var i = 0; i < names.length; i++) {
-    fullnameRandom = names[getRandomValue(names.length)] + ' ' + lastnames[getRandomValue(lastnames.length)];
-    colorCoatRandom = coatColor[getRandomValue(coatColor.length)];
-    colorEyeRandom = eyesColor[getRandomValue(eyesColor.length)];
-    wizardsClan[i] = {
-      name: fullnameRandom,
-      coatColor: colorCoatRandom,
-      eyesColor: colorEyeRandom
-    };
-  }
-};
+var form = document.querySelector('.setup-wizard-form');
 
 // Создание шаблона магов
 var buildTemplate = function (template, wizardsClanElement, list) {
-  for (var j = 0; j < wizardsClanElement.length; j++) {
+  for (var j = 0; j < 4; j++) {
     var wizardElement = template.cloneNode(true);
     wizardElement.querySelector('.setup-similar-label').textContent = wizardsClanElement[j].name;
-    wizardElement.querySelector('.wizard-coat').style.fill = wizardsClanElement[j].coatColor;
-    wizardElement.querySelector('.wizard-eyes').style.fill = wizardsClanElement[j].eyesColor;
+    wizardElement.querySelector('.wizard-coat').style.fill = wizardsClanElement[j].colorCoat;
+    wizardElement.querySelector('.wizard-eyes').style.fill = wizardsClanElement[j].colorEyes;
     list.appendChild(wizardElement);
   }
 };
@@ -47,9 +30,29 @@ var getRandomValue = function (lengthValue) {
   return (Math.floor(Math.random() * lengthValue));
 };
 
+var successHandle = function (wizardInfo) {
+  buildTemplate(wizardTemplate, wizardInfo, listElement);
+};
+
+var formSubmitHandle = function () {
+  closePopup();
+};
+
+var errorHandle = function (errorMessage) {
+  var node = document.createElement('div');
+  node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
+  node.style.position = 'absolute';
+  node.style.left = 0;
+  node.style.right = 0;
+  node.style.fontSize = '30px';
+
+  node.textContent = errorMessage;
+  document.body.insertAdjacentElement('afterbegin', node);
+};
+
 document.querySelector('.setup-similar').classList.remove('hidden');
-buildWizards(window.initialData.WIZARDS_NAMES, window.initialData.WIZARDS_LASTNAMES, window.initialData.WIZARDS_COAT_COLOR, window.initialData.WIZARDS_EYES_COLOR);
-buildTemplate(wizardTemplate, wizardsClan, listElement);
+window.backend.load(successHandle, errorHandle);
+
 
 // Открытие/закрытие окна настройки персонажа
 // Окно .setup открывается при нажатии на блок .setup-open. У блока удаляется класс hidden
@@ -97,6 +100,12 @@ wizardClose.addEventListener('keydown', function (evt) {
   if (evt.keyCode === 13) {
     closePopup();
   }
+});
+
+// сохранение изменений в форме
+form.addEventListener('submit', function (evt) {
+  evt.preventDefault();
+  window.backend.save(new FormData(form), formSubmitHandle, errorHandle);
 });
 
 // при нажатие на ESC в поле ввода имени мага (setup-user-name) остановим закрытие окна
