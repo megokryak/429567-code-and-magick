@@ -13,9 +13,14 @@ var wizardHiddenColorEyes = document.querySelector('input[name="eyes-color"]');
 var wizardFireBall = document.querySelector('.setup-fireball-wrap'); // Файерболл мага
 var wizardHiddenFireBall = document.querySelector('input[name="fireball-color"]');
 var form = document.querySelector('.setup-wizard-form');
+var colorCoatForRang;
+var colorEyesForRang;
+var arrayWizards;
+var newSortWizards;
 
 // Создание шаблона магов
 var buildTemplate = function (template, wizardsClanElement, list) {
+  list.innerHTML = '';
   for (var j = 0; j < 4; j++) {
     var wizardElement = template.cloneNode(true);
     wizardElement.querySelector('.setup-similar-label').textContent = wizardsClanElement[j].name;
@@ -25,13 +30,14 @@ var buildTemplate = function (template, wizardsClanElement, list) {
   }
 };
 
-// ункция рандомного числа от длины массива
+// Функция рандомного числа от длины массива
 var getRandomValue = function (lengthValue) {
   return (Math.floor(Math.random() * lengthValue));
 };
 
 var successHandle = function (wizardInfo) {
-  buildTemplate(wizardTemplate, wizardInfo, listElement);
+  arrayWizards = wizardInfo;
+  buildTemplate(wizardTemplate, arrayWizards, listElement);
 };
 
 var formSubmitHandle = function () {
@@ -48,6 +54,24 @@ var errorHandle = function (errorMessage) {
 
   node.textContent = errorMessage;
   document.body.insertAdjacentElement('afterbegin', node);
+};
+
+var getRang = function (element) {
+ var rangSimilar = 0;
+ if (element.colorCoat === colorCoatForRang) {
+  rangSimilar += 2;
+ };
+ if (element.colorEyes === colorEyesForRang) {
+  rangSimilar += 1;
+ }
+ return rangSimilar;
+};
+
+var getSortWizards = function (arr) {
+  var sortWizards = arr.sort(function (left, right) {
+    return getRang(left) - getRang(right);
+  });
+  return sortWizards;
 };
 
 document.querySelector('.setup-similar').classList.remove('hidden');
@@ -113,6 +137,8 @@ wizardName.addEventListener('keydown', stopCloseHandler);
 
 // ===========Конец реализации блока открытия, закрытия и отмены ESC в поле имени===========//
 
+
+
 // =========Изменение цвета мантии персонажа========//
 // По нажатию на .setup-wizard .wizard-coat меняет цвет рандомно из массива WIZARDS_COAT_COLOR
 
@@ -124,6 +150,9 @@ var wizardCoatClickHandler = function () {
   var colorCoat = getRandomColorForMag(window.initialData.WIZARDS_COAT_COLOR);
   wizardCoat.style.fill = colorCoat;
   wizardHiddenCoat.value = colorCoat;
+  colorCoatForRang = colorCoat;
+  newSortWizards = getSortWizards(arrayWizards);
+  buildTemplate(wizardTemplate, newSortWizards, listElement);
 };
 
 wizardCoat.addEventListener('click', wizardCoatClickHandler);
@@ -135,6 +164,7 @@ var wizardEyesClickHandler = function () {
   var colorEyes = getRandomColorForMag(window.initialData.WIZARDS_EYES_COLOR);
   wizardColorEyes.style.fill = colorEyes;
   wizardHiddenColorEyes.value = colorEyes;
+  colorEyesForRang = colorEyes;
 };
 
 wizardColorEyes.addEventListener('click', wizardEyesClickHandler);
