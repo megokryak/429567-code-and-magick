@@ -13,8 +13,8 @@ var wizardHiddenColorEyes = document.querySelector('input[name="eyes-color"]');
 var wizardFireBall = document.querySelector('.setup-fireball-wrap'); // Файерболл мага
 var wizardHiddenFireBall = document.querySelector('input[name="fireball-color"]');
 var form = document.querySelector('.setup-wizard-form');
-var colorCoatForRang;
-var colorEyesForRang;
+var colorCoatForRang = 'rgb(0, 0, 0)';
+var colorEyesForRang = 'black';
 var arrayWizards;
 var newSortWizards;
 
@@ -69,7 +69,7 @@ var getRang = function (element) {
 
 var getSortWizards = function (arr) {
   var sortWizards = arr.sort(function (left, right) {
-    return getRang(left) - getRang(right);
+    return getRang(right) - getRang(left);
   });
   return sortWizards;
 };
@@ -165,6 +165,8 @@ var wizardEyesClickHandler = function () {
   wizardColorEyes.style.fill = colorEyes;
   wizardHiddenColorEyes.value = colorEyes;
   colorEyesForRang = colorEyes;
+  newSortWizards = getSortWizards(arrayWizards);
+  buildTemplate(wizardTemplate, newSortWizards, listElement);
 };
 
 wizardColorEyes.addEventListener('click', wizardEyesClickHandler);
