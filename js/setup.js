@@ -17,6 +17,7 @@ var colorCoatForRang = 'rgb(0, 0, 0)';
 var colorEyesForRang = 'black';
 var arrayWizards;
 var newSortWizards;
+var lastTimeout;
 
 // Создание шаблона магов
 var buildTemplate = function (template, wizardsClanElement, list) {
@@ -57,14 +58,14 @@ var errorHandle = function (errorMessage) {
 };
 
 var getRang = function (element) {
- var rangSimilar = 0;
- if (element.colorCoat === colorCoatForRang) {
-  rangSimilar += 2;
- };
- if (element.colorEyes === colorEyesForRang) {
-  rangSimilar += 1;
- }
- return rangSimilar;
+  var rangSimilar = 0;
+  if (element.colorCoat === colorCoatForRang) {
+    rangSimilar += 2;
+  }
+  if (element.colorEyes === colorEyesForRang) {
+    rangSimilar += 1;
+  }
+  return rangSimilar;
 };
 
 var getSortWizards = function (arr) {
@@ -137,8 +138,6 @@ wizardName.addEventListener('keydown', stopCloseHandler);
 
 // ===========Конец реализации блока открытия, закрытия и отмены ESC в поле имени===========//
 
-
-
 // =========Изменение цвета мантии персонажа========//
 // По нажатию на .setup-wizard .wizard-coat меняет цвет рандомно из массива WIZARDS_COAT_COLOR
 
@@ -152,7 +151,12 @@ var wizardCoatClickHandler = function () {
   wizardHiddenCoat.value = colorCoat;
   colorCoatForRang = colorCoat;
   newSortWizards = getSortWizards(arrayWizards);
-  buildTemplate(wizardTemplate, newSortWizards, listElement);
+  if (lastTimeout) {
+    window.clearTimeout(lastTimeout);
+  }
+  lastTimeout = window.setTimeout(function () {
+    buildTemplate(wizardTemplate, newSortWizards, listElement);
+  }, 1000);
 };
 
 wizardCoat.addEventListener('click', wizardCoatClickHandler);
@@ -166,7 +170,12 @@ var wizardEyesClickHandler = function () {
   wizardHiddenColorEyes.value = colorEyes;
   colorEyesForRang = colorEyes;
   newSortWizards = getSortWizards(arrayWizards);
-  buildTemplate(wizardTemplate, newSortWizards, listElement);
+  if (lastTimeout) {
+    window.clearTimeout(lastTimeout);
+  }
+  lastTimeout = window.setTimeout(function () {
+    buildTemplate(wizardTemplate, newSortWizards, listElement);
+  }, 1000);
 };
 
 wizardColorEyes.addEventListener('click', wizardEyesClickHandler);
